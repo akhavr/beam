@@ -38,7 +38,9 @@ int Equihash<N,K>::InitialiseState(eh_HashState& base_state)
     memcpy(personalization, "ZcashPoW", 8);
     memcpy(personalization+8,  &le_N, 4);
     memcpy(personalization+12, &le_K, 4);
-    return blake2b_init_personal(&base_state, (512/N)*N/8, personalization);
+
+    // TODO: use blake2s_init_param here with initialized personal[BLAKE2B_PERSONALBYTES]
+    return blake2b_init(&base_state, (512/N)*N/8);
 }
 
 void GenerateHash(const eh_HashState& base_state, eh_index g,

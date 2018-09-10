@@ -23,14 +23,15 @@ set(IO_SRC
 # ~etc
 )
 
-IF (MSVC)
+if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX")
-ELSE()
+elseif(ANDROID)
+else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
-ENDIF()
+endif()
 
 add_library(utility STATIC ${UTILITY_SRC} ${IO_SRC})
-add_library(crypto STATIC crypto/blake/blake2b.cpp)
+add_library(crypto STATIC crypto/blake/ref/blake2b-ref.c)
 include_directories(${PROJECT_SOURCE_DIR}/utility)
 
 if (UV_INTERNAL)
@@ -48,4 +49,6 @@ else()
     target_link_libraries(utility boost_program_options boost_filesystem boost_system)
 endif()
 
-add_subdirectory(unittest)
+if(NOT ANDROID)
+    add_subdirectory(unittest)
+endif()

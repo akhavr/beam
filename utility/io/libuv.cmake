@@ -41,7 +41,11 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
         set(UV_LDFLAGS advapi32 iphlpapi psapi userenv shell32 ws2_32)
 else()
-    set(UV_FLAGS -Wall -Wextra -Wno-unused-parameter -pedantic -march=native)
+    set(UV_FLAGS -Wall -Wextra -Wno-unused-parameter -pedantic)
+
+    if(NOT ANDROID)
+        list(APPEND UV_FLAGS -march=native)
+    endif()
 
     if(CMAKE_BUILD_TYPE MATCHES "Debug")
         list(APPEND UV_FLAGS -O0 -ggdb3)

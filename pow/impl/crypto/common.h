@@ -12,9 +12,10 @@
 #include <stdint.h>
 #include <assert.h>
 
-#if defined(_MSC_VER) || defined(__APPLE__)
+// TODO: add 'ifdef ANDROID' here
+//#if defined(_MSC_VER) || defined(__APPLE__)
 #include "compat/endian.h"
-#endif
+//#endif
 
 //#if defined(NDEBUG)
 //# error "Zcash cannot be compiled without assertions."

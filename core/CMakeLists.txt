@@ -24,4 +24,6 @@ target_include_directories(core PUBLIC ../secp256k1-zkp/src)
 
 include_directories(${PROJECT_SOURCE_DIR}/core)
 
-add_subdirectory(unittest)
+if(NOT ANDROID)
+    add_subdirectory(unittest)
+endif()

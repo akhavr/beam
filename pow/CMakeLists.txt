@@ -22,4 +22,6 @@ target_link_libraries(pow crypto)
 target_include_directories(pow PRIVATE ${PROJECT_SOURCE_DIR}/utility/crypto)
 target_compile_definitions(pow PRIVATE ENABLE_MINING)
 
-add_subdirectory(unittests)
+if(NOT ANDROID)
+    add_subdirectory(unittest)
+endif()

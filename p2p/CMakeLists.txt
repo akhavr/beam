@@ -20,4 +20,6 @@ add_library(p2p STATIC ${P2P_SRC})
 add_dependencies(p2p utility)
 target_link_libraries(p2p utility)
 
-add_subdirectory(unittest)
+if(NOT ANDROID)
+    add_subdirectory(unittest)
+endif()

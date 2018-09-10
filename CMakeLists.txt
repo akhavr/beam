@@ -57,12 +57,14 @@ endif()
 
 enable_testing()
 
-function(add_test_snippet EXE_NAME LIB_NAME)
-    add_executable(${EXE_NAME} ${EXE_NAME}.cpp)
-    add_dependencies(${EXE_NAME} ${LIB_NAME})
-    target_link_libraries(${EXE_NAME} ${LIB_NAME})
-    add_test(NAME ${EXE_NAME} COMMAND $<TARGET_FILE:${EXE_NAME}>)
-endfunction()
+if(NOT ANDROID)
+	function(add_test_snippet EXE_NAME LIB_NAME)
+	    add_executable(${EXE_NAME} ${EXE_NAME}.cpp)
+	    add_dependencies(${EXE_NAME} ${LIB_NAME})
+	    target_link_libraries(${EXE_NAME} ${LIB_NAME})
+	    add_test(NAME ${EXE_NAME} COMMAND $<TARGET_FILE:${EXE_NAME}>)
+	endfunction()
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -118,7 +120,11 @@ if(MSVC)
 	endif()
 
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wall -pthread")
+	if(NOT ANDROID)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+	endif()
+    
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pthread")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb3")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
@@ -159,15 +165,21 @@ add_definitions(-DPROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 
 include_directories(${PROJECT_SOURCE_DIR}/utility) # TODO  move to ./3rdparty all that stuff that requires to add this line
 
-add_subdirectory(utility)
-add_subdirectory(core)
-add_subdirectory(pow)
-add_subdirectory(p2p)
-add_subdirectory(wallet)
-add_subdirectory(sqlite)
-add_subdirectory(beam)
-add_subdirectory(bbs)
-add_subdirectory(ui)
+
+if(ANDROID)
+	include_directories($ENV{BOOST_ROOT})
+
+	add_subdirectory(utility)
+	add_subdirectory(core)
+	add_subdirectory(pow)
+	add_subdirectory(p2p)
+else()
+	add_subdirectory(wallet)
+	add_subdirectory(sqlite)
+	add_subdirectory(beam)
+	add_subdirectory(bbs)
+	add_subdirectory(ui)
+endif()
 
 ########################################################
 ### PACKAGING ##########################################
