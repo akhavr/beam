@@ -42,11 +42,20 @@ else()
     target_link_libraries(utility uv)
 endif()
 
-if (Boost_FOUND)
-    find_package(Boost COMPONENTS program_options filesystem)
-    target_link_libraries(utility Boost::program_options Boost::filesystem)
+if(ANDROID)
+    include_directories($ENV{BOOST_ROOT_ANDROID}/include)
+
+    target_link_libraries(utility 
+        $ENV{BOOST_ROOT_ANDROID}/lib/libboost_program_options-clang-darwin-mt-a32-1_68.a 
+        $ENV{BOOST_ROOT_ANDROID}/lib/libboost_filesystem-clang-darwin-mt-a32-1_68.a
+        $ENV{BOOST_ROOT_ANDROID}/lib/libboost_system-clang-darwin-mt-a32-1_68.a)
 else()
-    target_link_libraries(utility boost_program_options boost_filesystem boost_system)
+    if (Boost_FOUND)
+        find_package(Boost COMPONENTS program_options filesystem)
+        target_link_libraries(utility Boost::program_options Boost::filesystem)
+    else()
+        target_link_libraries(utility boost_program_options boost_filesystem boost_system)
+    endif()
 endif()
 
 if(NOT ANDROID)

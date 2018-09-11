@@ -78,7 +78,7 @@ else()
         ${UV_SRC_DIR}/unix/tty.c
         ${UV_SRC_DIR}/unix/udp.c
         ${UV_SRC_DIR}/unix/proctitle.c)
-    if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    if(LINUX OR ANDROID)
         set(UV_COMPILE_DEFS ${UV_COMPILE_DEFS} _GNU_SOURCE)
         set(UV_SOURCES ${UV_SOURCES}
             ${UV_SRC_DIR}/unix/linux-core.c
@@ -88,7 +88,7 @@ else()
             ${UV_SRC_DIR}/unix/proctitle.c
             ${UV_SRC_DIR}/unix/sysinfo-loadavg.c
             ${UV_SRC_DIR}/unix/sysinfo-memory.c)
-    elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+    elseif(APPLE)
         set(UV_COMPILE_DEFS ${UV_COMPILE_DEFS} _DARWIN_USE_64_BIT_INODE=1 _DARWIN_UNLIMITED_SELECT=1)
         set(UV_SOURCES ${UV_SOURCES}
             ${UV_SRC_DIR}/unix/darwin.c
@@ -97,6 +97,12 @@ else()
             ${UV_SRC_DIR}/unix/kqueue.c
             ${UV_SRC_DIR}/unix/proctitle.c)
     endif()
+
+    if(ANDROID)
+        set(UV_SOURCES ${UV_SOURCES}
+            ${UV_SRC_DIR}/unix/pthread-fixes.c)
+    endif()
+
 endif()
 
 add_library(uvinternal STATIC ${UV_SOURCES})
